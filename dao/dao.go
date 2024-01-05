@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"context"
 	"pathpro-go/conf"
 
 	"gorm.io/driver/mysql"
@@ -47,4 +48,8 @@ func Close() {
 
 func GetDB() *gorm.DB {
 	return _db
+}
+
+func GetDBWithCtx(ctx context.Context) *gorm.DB {
+	return _db.WithContext(ctx)
 }
