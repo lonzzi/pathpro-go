@@ -56,7 +56,7 @@ func ParseToken(token string) (*Claims, error) {
 			return claims, nil
 		}
 	}
-    fmt.Println(err)
+	fmt.Println(err)
 	return nil, err
 }
 

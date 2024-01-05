@@ -55,7 +55,7 @@ func UserRegister(userReq *model.UserRegisterRequest) error {
 	return nil
 }
 
-func UserLogin(userReq *model.UserLoginRequest) (interface{}, error) {
+func UserLogin(userReq *model.UserLoginRequest) (*model.UserLoginResponse, error) {
 	db := dao.GetDB()
 	user := &dao.User{}
 	user.Username = userReq.Username
@@ -80,15 +80,15 @@ func UserLogin(userReq *model.UserLoginRequest) (interface{}, error) {
 	}
 
 	accessToken, refreshToken, err := jwt.GenerateToken(user.ID, user.Username)
-    if err != nil {
-        return nil, errno.ErrTokenInvalid
-    }
+	if err != nil {
+		return nil, errno.ErrTokenInvalid
+	}
 
 	return &model.UserLoginResponse{
-		Id:       user.ID,
-		Username: user.Username,
-        Token:    accessToken,
-        RefreshToken: refreshToken,
+		Id:           user.ID,
+		Username:     user.Username,
+		Token:        accessToken,
+		RefreshToken: refreshToken,
 	}, nil
 }
 

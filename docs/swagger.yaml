@@ -1,0 +1,113 @@
+basePath: /
+definitions:
+  engine.rawResponse-model_UserLoginResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.UserLoginResponse'
+      msg:
+        type: string
+    type: object
+  model.UserLoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  model.UserLoginResponse:
+    properties:
+      id:
+        type: integer
+      refresh_token:
+        type: string
+      token:
+        type: string
+      username:
+        type: string
+    type: object
+  model.UserRegisterRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: PathPro API Server.
+  title: PathPro API
+  version: "1.0"
+paths:
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Log in a user with the provided credentials
+      parameters:
+      - description: User login details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully logged in user
+          schema:
+            $ref: '#/definitions/engine.rawResponse-model_UserLoginResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/engine.rawResponse-model_UserLoginResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/engine.rawResponse-model_UserLoginResponse'
+      summary: Log in a user
+      tags:
+      - User
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with the provided details
+      parameters:
+      - description: User registration details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserRegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully registered user
+          schema:
+            $ref: '#/definitions/engine.rawResponse-model_UserLoginResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/engine.rawResponse-model_UserLoginResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/engine.rawResponse-model_UserLoginResponse'
+      summary: Register a new user
+      tags:
+      - User
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

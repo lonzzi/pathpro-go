@@ -7,29 +7,31 @@ import (
 	"pathpro-go/service"
 )
 
+// Register godoc
+// @Summary Register a new user
+// @Description Register a new user with the provided details
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param user body model.UserRegisterRequest true "User registration details"
+// @Success 200 {object} engine.rawResponse[model.UserLoginResponse] "Successfully registered user"
+// @Failure 400 {object} engine.rawResponse[model.UserLoginResponse] "Invalid request"
+// @Failure 500 {object} engine.rawResponse[model.UserLoginResponse] "Internal server error"
+// @Router /user/register [post]
 func Register(ctx *engine.Context) *engine.Response {
 	userReq := &model.UserRegisterRequest{}
 
 	err := ctx.Bind(userReq)
 	if err != nil {
-		return &engine.Response{
-			Code: errno.ErrBind,
-			Msg:  err.Error(),
-		}
+		return engine.NewErrorResponse(errno.ErrBind)
 	}
 	err = service.UserRegister(userReq)
 	if err != nil {
 		errnoErr, ok := err.(errno.ErrCode)
 		if ok {
-			return &engine.Response{
-				Code: errnoErr,
-				Msg:  err.Error(),
-			}
+			return engine.NewErrorResponse(errnoErr)
 		} else {
-			return &engine.Response{
-				Code: errno.InternalServerError,
-				Msg:  err.Error(),
-			}
+			return engine.NewErrorResponse(errno.InternalServerError)
 		}
 	}
 
@@ -40,55 +42,43 @@ func Register(ctx *engine.Context) *engine.Response {
 	if err != nil {
 		errnoErr, ok := err.(errno.ErrCode)
 		if ok {
-			return &engine.Response{
-				Code: errnoErr,
-				Msg:  err.Error(),
-			}
+			return engine.NewErrorResponse(errnoErr)
 		} else {
-			return &engine.Response{
-				Code: errno.InternalServerError,
-				Msg:  err.Error(),
-			}
+			return engine.NewErrorResponse(errno.InternalServerError)
 		}
 	}
 
-	return &engine.Response{
-		Code: errno.OK,
-		Msg:  errno.OK.Error(),
-		Data: userResp,
-	}
+	return engine.NewSuccessResponse[*model.UserLoginResponse](userResp)
 }
 
+// Login godoc
+// @Summary Log in a user
+// @Description Log in a user with the provided credentials
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param user body model.UserLoginRequest true "User login details"
+// @Success 200 {object} engine.rawResponse[model.UserLoginResponse] "Successfully logged in user"
+// @Failure 400 {object} engine.rawResponse[model.UserLoginResponse] "Invalid request"
+// @Failure 500 {object} engine.rawResponse[model.UserLoginResponse] "Internal server error"
+// @Router /user/login [post]
 func Login(ctx *engine.Context) *engine.Response {
 	userReq := &model.UserLoginRequest{}
 
 	err := ctx.Bind(userReq)
 	if err != nil {
-		return &engine.Response{
-			Code: errno.ErrBind,
-			Msg:  err.Error(),
-		}
+		return engine.NewErrorResponse(errno.ErrBind)
 	}
 
 	userResp, err := service.UserLogin(userReq)
 	if err != nil {
 		errnoErr, ok := err.(errno.ErrCode)
 		if ok {
-			return &engine.Response{
-				Code: errnoErr,
-				Msg:  err.Error(),
-			}
+			return engine.NewErrorResponse(errnoErr)
 		} else {
-			return &engine.Response{
-				Code: errno.InternalServerError,
-				Msg:  err.Error(),
-			}
+			return engine.NewErrorResponse(errno.InternalServerError)
 		}
 	}
 
-	return &engine.Response{
-		Code: errno.OK,
-		Msg:  errno.OK.Error(),
-		Data: userResp,
-	}
+	return engine.NewSuccessResponse[*model.UserLoginResponse](userResp)
 }

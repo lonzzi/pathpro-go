@@ -6,13 +6,17 @@ import (
 	"pathpro-go/pkg/engine"
 	"pathpro-go/router"
 
-	"github.com/gin-gonic/gin"
+	_ "pathpro-go/docs"
 )
 
+// @title           PathPro API
+// @version         1.0
+// @description     PathPro API Server.
+// @host            localhost:8080
+// @BasePath        /
+// @securityDefinitions.basic  BasicAuth
 func main() {
 	conf.Init("config.toml")
-
-	engine.SetMode(gin.DebugMode)
 	e := engine.New()
 	router.Init(e)
 	dao.Init()

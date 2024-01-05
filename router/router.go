@@ -5,26 +5,24 @@ import (
 	"pathpro-go/middleware"
 	"pathpro-go/pkg/engine"
 	"pathpro-go/pkg/errno"
+
+	swaggerFiles "github.com/swaggo/files" // swagger embed files
 )
 
-func Init(r *engine.Engine) {
-	r.GET("/ping", func(ctx *engine.Context) *engine.Response {
-		return &engine.Response{
-			Code: errno.OK,
-			Msg:  "pong",
-		}
+func Init(e *engine.Engine) {
+	e.GET("/ping", func(ctx *engine.Context) *engine.Response {
+		return engine.NewResponseWithMsg[any](errno.OK, "pong", nil)
 	})
 
-	userGroup := r.Group("/user")
+	e.GET("/swagger/*any", e.WrapHandler(swaggerFiles.Handler)) // swagger embed router
+
+	userGroup := e.Group("/user")
 	{
 		userGroup.POST("register", user.Register)
 		userGroup.POST("login", user.Login)
 	}
 
-	r.Use(middleware.JWTAuth()).GET("/test", func(ctx *engine.Context) *engine.Response {
-		return &engine.Response{
-			Code: errno.OK,
-			Msg:  "test",
-		}
+	e.Use(middleware.JWTAuth()).GET("/test", func(ctx *engine.Context) *engine.Response {
+		return engine.NewResponseWithMsg[any](errno.OK, "test", nil)
 	})
 }

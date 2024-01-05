@@ -4,6 +4,8 @@ import (
 	"pathpro-go/pkg/errno"
 
 	"github.com/gin-gonic/gin"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"golang.org/x/net/webdav"
 )
 
 type Engine struct {
@@ -24,10 +26,10 @@ type Response struct {
 	Data interface{}   `json:"data"`
 }
 
-type rawResponse struct {
-	Code int         `json:"code"`
-	Msg  string      `json:"msg"`
-	Data interface{} `json:"data"`
+type rawResponse[T any] struct {
+	Code int    `json:"code"`
+	Msg  string `json:"msg"`
+	Data T      `json:"data"`
 }
 
 type Handler interface {
@@ -64,12 +66,16 @@ func (h HandlerFunc) handle(c *Context) {
 	if resp == nil {
 		return
 	}
-	c.JSON(resp.Code.HTTPStatusCode, &rawResponse{
+	c.JSON(resp.Code.HTTPStatusCode, &rawResponse[any]{
 		Code: resp.Code.Code,
 		Msg:  resp.Msg,
 		Data: resp.Data,
 	})
 	c.Abort()
+}
+
+func (c Engine) GetEngine() *gin.Engine {
+	return c.engine
 }
 
 func (e *Engine) Run(addr ...string) error {
@@ -110,6 +116,13 @@ func (e *Engine) POST(relativePath string, handlers ...HandlerFunc) IRoutes {
 		})
 	}
 	return e
+}
+
+func (e *Engine) WrapHandler(h *webdav.Handler) HandlerFunc {
+	return func(ctx *Context) *Response {
+		ginSwagger.WrapHandler(h)(ctx.Context)
+		return nil
+	}
 }
 
 func (g *Group) Use(handlers ...HandlerFunc) IRoutes {
@@ -156,8 +169,4 @@ func (e *Engine) Group(relativePath string, handlers ...HandlerFunc) *Group {
 func (g *Group) Group(relativePath string, handlers ...HandlerFunc) *Group {
 	group := g.RouterGroup.Group(relativePath)
 	return &Group{group}
-}
-
-func (h HandlerFunc) Handle(c *Context) {
-	c.JSON(200, h(c))
 }
