@@ -1,0 +1,11 @@
+version: '3'
+services:
+  pathpro-go:
+    build: .
+    image: pathpro-go:latest
+    container_name: pathpro-go
+    ports:
+      - 8080:8080
+    restart: always
+    volumes:
+      - ./config.toml:/root/config.toml
