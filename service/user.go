@@ -3,7 +3,9 @@ package service
 import (
 	"errors"
 	"pathpro-go/dao"
+	"pathpro-go/middleware"
 	"pathpro-go/model"
+	"pathpro-go/pkg/engine"
 	"pathpro-go/pkg/errno"
 	"pathpro-go/utils/jwt"
 
@@ -55,7 +57,7 @@ func UserRegister(userReq *model.UserRegisterRequest) error {
 	return nil
 }
 
-func UserLogin(userReq *model.UserLoginRequest) (*model.UserLoginResponse, error) {
+func UserLogin(ctx *engine.Context, userReq *model.UserLoginRequest) (*model.UserLoginResponse, error) {
 	db := dao.GetDB()
 	user := &dao.User{}
 	user.Username = userReq.Username
@@ -83,6 +85,8 @@ func UserLogin(userReq *model.UserLoginRequest) (*model.UserLoginResponse, error
 	if err != nil {
 		return nil, errno.ErrTokenInvalid
 	}
+
+	middleware.SetToken(ctx, refreshToken)
 
 	return &model.UserLoginResponse{
 		Id:           user.ID,

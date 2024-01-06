@@ -35,7 +35,7 @@ func Register(ctx *engine.Context) *engine.Response {
 		}
 	}
 
-	userResp, err := service.UserLogin(&model.UserLoginRequest{
+	userResp, err := service.UserLogin(ctx, &model.UserLoginRequest{
 		Username: userReq.Username,
 		Password: userReq.Password,
 	})
@@ -48,7 +48,7 @@ func Register(ctx *engine.Context) *engine.Response {
 		}
 	}
 
-	return engine.NewSuccessResponse[*model.UserLoginResponse](userResp)
+	return engine.NewSuccessResponse(userResp)
 }
 
 // Login godoc
@@ -70,7 +70,7 @@ func Login(ctx *engine.Context) *engine.Response {
 		return engine.NewErrorResponse(errno.ErrBind)
 	}
 
-	userResp, err := service.UserLogin(userReq)
+	userResp, err := service.UserLogin(ctx, userReq)
 	if err != nil {
 		errnoErr, ok := err.(errno.ErrCode)
 		if ok {
@@ -80,5 +80,5 @@ func Login(ctx *engine.Context) *engine.Response {
 		}
 	}
 
-	return engine.NewSuccessResponse[*model.UserLoginResponse](userResp)
+	return engine.NewSuccessResponse(userResp)
 }

@@ -29,9 +29,10 @@ var (
 
 // JWT errors
 var (
-	ErrTokenInvalid  = ErrCode{Code: 20000, HTTPStatusCode: 401, Message: "token is invalid"}
-	ErrExpiredToken  = ErrCode{Code: 20001, HTTPStatusCode: 401, Message: "token is expired"}
-	ErrTokenNotFound = ErrCode{Code: 20002, HTTPStatusCode: 401, Message: "token not found"}
+	ErrTokenInvalid         = ErrCode{Code: 20000, HTTPStatusCode: 401, Message: "token is invalid"}
+	ErrExpiredToken         = ErrCode{Code: 20001, HTTPStatusCode: 401, Message: "token is expired"}
+	ErrTokenNotFound        = ErrCode{Code: 20002, HTTPStatusCode: 401, Message: "token not found"}
+	ErrRefreshTokenNotFound = ErrCode{Code: 20003, HTTPStatusCode: 401, Message: "refresh token is not found"}
 )
 
 // User errors

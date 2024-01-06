@@ -11,7 +11,7 @@ import (
 
 func Init(e *engine.Engine) {
 	e.GET("/ping", func(ctx *engine.Context) *engine.Response {
-		return engine.NewResponseWithMsg[any](errno.OK, "pong", nil)
+		return engine.NewResponseWithMsg(errno.OK, "pong", nil)
 	})
 
 	e.GET("/swagger/*any", e.WrapHandler(swaggerFiles.Handler)) // swagger embed router
@@ -23,6 +23,6 @@ func Init(e *engine.Engine) {
 	}
 
 	e.Use(middleware.JWTAuth()).GET("/test", func(ctx *engine.Context) *engine.Response {
-		return engine.NewResponseWithMsg[any](errno.OK, "test", nil)
+		return engine.NewResponseWithMsg(errno.OK, "test", nil)
 	})
 }

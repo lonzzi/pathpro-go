@@ -26,10 +26,10 @@ func GenerateToken(id uint, username string) (accessToken, refreshToken string, 
 		Username: username,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
-			Issuer:    "mall",
+			Issuer:    "pathpro-go",
 		},
 	}
-	// 加密并获得完整的编码后的字符串token
+
 	accessToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(jwtSecret)
 	if err != nil {
 		return "", "", err
@@ -37,7 +37,7 @@ func GenerateToken(id uint, username string) (accessToken, refreshToken string, 
 
 	refreshToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
 		ExpiresAt: rtExpireTime.Unix(),
-		Issuer:    "mall",
+		Issuer:    "pathpro-go",
 	}).SignedString(jwtSecret)
 	if err != nil {
 		return "", "", err
@@ -46,7 +46,6 @@ func GenerateToken(id uint, username string) (accessToken, refreshToken string, 
 	return accessToken, refreshToken, err
 }
 
-// ParseToken 验证用户token
 func ParseToken(token string) (*Claims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return jwtSecret, nil
@@ -60,7 +59,6 @@ func ParseToken(token string) (*Claims, error) {
 	return nil, err
 }
 
-// ParseRefreshToken 验证用户token
 func ParseRefreshToken(aToken, rToken string) (newAToken, newRToken string, err error) {
 	accessClaim, err := ParseToken(aToken)
 	if err != nil {
